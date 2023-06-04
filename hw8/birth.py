@@ -11,7 +11,7 @@ def get_birthdays_per_week(users):
     end_of_week = start_of_week + datetime.timedelta(days=6)
     
     # Фільтруємо користувачів, які мають день народження на поточному тижні
-    birthdays_this_week = [user for user in users if start_of_week <= user['birthday'].date() <= end_of_week]
+    birthdays_this_week = [user for user in users if start_of_week <= user['birthday'].date().replace(year=today.year) <= end_of_week]
     
     # Створюємо словник, де ключ - день тижня, а значення - список користувачів
     birthdays_by_day = {}
@@ -34,10 +34,10 @@ def get_birthdays_per_week(users):
 
 
 users = [
-    {'name': 'Bill', 'birthday': datetime.datetime(2023, 5, 26)},
-    {'name': 'Jill', 'birthday': datetime.datetime(2023, 6, 2)},
-    {'name': 'Kim', 'birthday': datetime.datetime(2023, 6, 3)},
-    {'name': 'Jan', 'birthday': datetime.datetime(2023, 6, 4)}
+    {'name': 'Bill', 'birthday': datetime.datetime(2004, 5, 26)},
+    {'name': 'Jill', 'birthday': datetime.datetime(1995, 6, 2)},
+    {'name': 'Kim', 'birthday': datetime.datetime(2000, 6, 3)},
+    {'name': 'Jan', 'birthday': datetime.datetime(1996, 6, 4)}
 ]
 
 get_birthdays_per_week(users)
