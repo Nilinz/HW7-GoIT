@@ -40,7 +40,7 @@ def show_all_contacts():
         return result.strip()
 
 def main():
-    print("Hello! My commands: add, change, phone, show all. To finish type close or exit.")
+    print("Hello! My commands: add, change, phone, show all. Type contact name without a space. Example: add MarkoMark 138238932832. To finish type close or exit.")
     while True:
         command = input("> ").lower()
         
