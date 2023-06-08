@@ -12,21 +12,18 @@ def input_error(func):
             return "Invalid input."
     return wrapper
 
-@input_error
 def add_contact(name, phone):
     if name.isdigit():
         return "Invalid input. Name should be a text."
     contacts[name] = phone
     return "Contact added successfully."
 
-@input_error
 def change_contact(name, phone):
     if name.isdigit():
         return "Invalid input. Name should be a text."
     contacts[name] = phone
     return "Contact updated successfully."
 
-@input_error
 def get_phone_number(name):
     return contacts[name]
 
