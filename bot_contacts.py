@@ -16,8 +16,8 @@ def input_error(func):
 def add_contact(name, phone):
     if name.isdigit():
         return "Invalid input. Name should be a text."
-    if len(name.split()) > 1:
-        name_parts = name.split(maxsplit=1)
+    if " " in name:
+        name_parts = name.split(" ", 1)
         name = name_parts[0]
         phone = name_parts[1] + " " + phone
     contacts[name] = phone
@@ -27,8 +27,8 @@ def add_contact(name, phone):
 def change_contact(name, phone):
     if name.isdigit():
         return "Invalid input. Name should be a text."
-    if len(name.split()) > 1:
-        name_parts = name.split(maxsplit=1)
+    if " " in name:
+        name_parts = name.split(" ", 1)
         name = name_parts[0]
         phone = name_parts[1] + " " + phone
     contacts[name] = phone
