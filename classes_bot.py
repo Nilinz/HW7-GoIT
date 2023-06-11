@@ -54,7 +54,6 @@ def input_error(func):
 
 contacts = AddressBook()
 
-@input_error
 def add_contact(name, phone):
     if name.isdigit():
         return "Invalid input. Name should be a text."
@@ -67,7 +66,6 @@ def add_contact(name, phone):
         contacts.add_record(record)
     return "Contact added successfully."
 
-@input_error
 def change_contact(name, phone):
     if name.isdigit():
         return "Invalid input. Name should be a text."
@@ -78,7 +76,6 @@ def change_contact(name, phone):
     else:
         return "Contact not found."
 
-@input_error
 def get_phone_number(name):
     if name in contacts:
         record = contacts[name]
