@@ -184,7 +184,7 @@ def show_all_contacts():
 
 
 def main():
-    print("Hello! My commands: add, change, phone, show all. Type contact name without a space. Example: add MarkoMark 138238932832. To finish type close or exit.")
+    print("Hello! My commands: add, change, phone, show all. You can type the command like this: add JohnDoe 123456 1990-05-15. To finish type close or exit.")
     while True:
         command = input("> ").lower()
 
