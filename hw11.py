@@ -1,4 +1,5 @@
 import datetime
+import re
 from collections import UserDict
 
 
@@ -39,8 +40,10 @@ class Phone(Field):
         self._value = new_value
 
     def _is_valid_phone(self, phone):
-        # Перевірка на коректність номера телефону
-        # Реалізуйте свою власну логіку перевірки тут
+        if len(phone) != 6:
+            return False
+        if not phone.isdigit():
+            return False
         return True
 
 
@@ -59,14 +62,15 @@ class Birthday(Field):
         self._value = new_value
 
     def _is_valid_birthday(self, birthday):
-        # Перевірка на коректність дня народження
-        # Реалізуйте свою власну логіку перевірки тут
-        return True
+        try:
+            datetime.datetime.strptime(str(birthday), "%Y-%m-%d")
+            return True
+        except ValueError:
+            return False
 
     def _parse_birthday(self, birthday):
-        # Парсинг дня народження і повернення об'єкта datetime.date
-        # Реалізуйте свою власну логіку парсингу тут
-        return datetime.date.today()
+        return datetime.datetime.strptime(str(birthday), "%Y-%m-%d").date()
+
 
 
 class Record:
@@ -86,19 +90,22 @@ class Record:
             if phone.value == old_phone:
                 phone.value = new_phone
 
+    def get_next_birthday(self, current_year):
+        today = datetime.date.today()
+        current_year_birthday = datetime.date(today.year, self.birthday.value.month, self.birthday.value.day)
+
+        if current_year_birthday >= today:
+            return current_year_birthday
+        else:
+            next_year_birthday = datetime.date(today.year + 1, self.birthday.value.month, self.birthday.value.day)
+            return next_year_birthday
+        
     def days_to_birthday(self):
         if self.birthday.value:
-            today = datetime.date.today()
-            next_birthday = self._get_next_birthday(today.year)
-            days_left = (next_birthday - today).days
+            next_birthday = self.get_next_birthday(datetime.date.today().year)
+            days_left = (next_birthday - datetime.date.today()).days
             return days_left
         return None
-
-    def _get_next_birthday(self, current_year):
-        # Отримання дати наступного дня народження на підставі поточного року
-        # Реалізуйте свою власну логіку тут
-        return datetime.date(current_year, 1, 1)
-
 
 class AddressBook(UserDict):
     def add_record(self, record):
@@ -126,17 +133,22 @@ contacts = AddressBook()
 
 
 @input_error
-def add_contact(name, phone):
+def add_contact(name, phone=None, birthday=None):
     if name.isdigit():
         return "Invalid input. Name should be text."
     if name in contacts:
         record = contacts[name]
-        record.add_phone(phone)
+        if phone:
+            record.add_phone(phone)
+        if birthday:
+            record.birthday.value = birthday
     else:
-        record = Record(name)
-        record.add_phone(phone)
-        contacts.add_record(record)
+        record = Record(name, birthday)
+        if phone:
+            record.add_phone(phone)
+        contacts.add_record(record)  
     return "Contact added successfully."
+
 
 
 @input_error
@@ -165,7 +177,7 @@ def show_all_contacts():
         return "No contacts found."
     else:
         result = ""
-        for record in contacts:
+        for record in contacts.data.values():  
             phones = ", ".join(str(phone) for phone in record.phones)
             result += f"{record.name}: {phones}\n"
         return result.strip()
@@ -179,8 +191,8 @@ def main():
         if command == "hello":
             print("How can I help you?")
         elif command.startswith("add"):
-            _, name, phone = command.split(" ", 2)
-            print(add_contact(name, phone))
+            _, name, phone, birthday = command.split(" ", 3)
+            print(add_contact(name, phone, birthday))
         elif command.startswith("change"):
             _, name, phone = command.split(" ", 2)
             print(change_contact(name, phone))
@@ -189,8 +201,11 @@ def main():
             print(get_phone_number(name))
         elif command == "show all":
             print(show_all_contacts())
-        elif command == "days to birthday":
+        
+        elif command.startswith("days"):
             _, name = command.split(" ", 1)
+            if name not in contacts:
+                add_contact(name)
             if name in contacts:
                 record = contacts[name]
                 days_left = record.days_to_birthday()
@@ -200,6 +215,7 @@ def main():
                     print(f"{name} doesn't have a birthday recorded.")
             else:
                 print("Contact not found.")
+
         elif command in ["good bye", "close", "exit"]:
             print("Good bye!")
             break
@@ -209,3 +225,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+ 
