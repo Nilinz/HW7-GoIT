@@ -178,6 +178,18 @@ def main():
                 print(show_all_contacts(int(page)))
             else:
                 print(show_all_contacts())
+        elif command.startswith("days"):
+            _, name = command.split(" ", 1)
+            if name in contacts:
+                record = contacts[name]
+                days = record.days_to_birthday()
+                if days is None:
+                    print("Birthday is not set for this contact.")
+                else:
+                    print(f"Days to birthday: {days}")
+            else:
+                print("Contact not found.")
+ 
         elif command in ["good bye", "close", "exit"]:
             print("Good bye!")
             break
